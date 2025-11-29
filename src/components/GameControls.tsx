@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import type { GameAction } from '../logic/types';
+import { playChipSound } from '../logic/sounds';
 import './GameControls.css';
 
 interface GameControlsProps {
@@ -15,7 +16,13 @@ export const GameControls: React.FC<GameControlsProps> = ({ onAction }) => {
     // Let's just provide a slider and some quick buttons.
 
     const handleRaise = () => {
+        playChipSound();
         onAction({ type: 'raise', amount: raiseAmount });
+    };
+
+    const handleAction = (type: 'fold' | 'call') => {
+        playChipSound();
+        onAction({ type });
     };
 
     return (
@@ -33,11 +40,11 @@ export const GameControls: React.FC<GameControlsProps> = ({ onAction }) => {
             </div>
 
             <div className="action-buttons">
-                <button className="btn btn-fold" onClick={() => onAction({ type: 'fold' })}>
+                <button className="btn btn-fold" onClick={() => handleAction('fold')}>
                     Fold
                 </button>
 
-                <button className="btn btn-call" onClick={() => onAction({ type: 'call' })}>
+                <button className="btn btn-call" onClick={() => handleAction('call')}>
                     Call / Limp
                 </button>
 

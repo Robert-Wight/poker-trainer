@@ -8,7 +8,7 @@ export interface Card {
 
 export type Hand = [Card, Card];
 
-export type Position = 'UTG' | 'MP' | 'CO' | 'BTN' | 'SB' | 'BB';
+export type Position = 'UTG' | 'UTG+1' | 'UTG+2' | 'MP' | 'MP+1' | 'CO' | 'BTN' | 'SB' | 'BB';
 
 export interface HandRange {
     name: string;
@@ -23,6 +23,8 @@ export interface GameAction {
     amount?: number; // in BB
 }
 
+export type PlayerCount = 2 | 6 | 9;
+
 export interface Scenario {
     heroPosition: Position;
     heroHand: Hand;
@@ -31,6 +33,7 @@ export interface Scenario {
     potSize: number; // in BB
     stackSize: number; // in BB
     description: string;
+    playerCount: PlayerCount;
 }
 
 export interface EvaluationResult {

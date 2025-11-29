@@ -4,7 +4,8 @@ import { GameControls } from './components/GameControls';
 import { Feedback } from './components/Feedback';
 import { Glossary } from './components/Glossary';
 import { generateScenario, evaluateAction } from './logic/engine';
-import type { Scenario, EvaluationResult, GameAction } from './logic/types';
+import { playCardSound, playWinSound, playErrorSound } from './logic/sounds';
+import type { Scenario, EvaluationResult, GameAction, PlayerCount } from './logic/types';
 import './App.css';
 
 function App() {
@@ -13,14 +14,16 @@ function App() {
   const [streak, setStreak] = useState(0);
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [showGlossary, setShowGlossary] = useState(false);
+  const [playerCount, setPlayerCount] = useState<PlayerCount>(6);
 
   useEffect(() => {
     startNewHand();
-  }, []);
+  }, [playerCount]); // Restart when count changes
 
   const startNewHand = () => {
-    setScenario(generateScenario());
+    setScenario(generateScenario(playerCount));
     setResult(null);
+    playCardSound();
   };
 
   const handleAction = (action: GameAction) => {
@@ -32,9 +35,11 @@ function App() {
     if (evalResult.isCorrect) {
       setStreak(s => s + 1);
       setScore(s => ({ ...s, correct: s.correct + 1, total: s.total + 1 }));
+      playWinSound();
     } else {
       setStreak(0);
       setScore(s => ({ ...s, total: s.total + 1 }));
+      playErrorSound();
     }
   };
 
@@ -46,6 +51,16 @@ function App() {
         <div className="header-left">
           <div className="title">Poker Trainer</div>
           <button className="btn-help" onClick={() => setShowGlossary(true)}>?</button>
+
+          <select
+            className="player-select"
+            value={playerCount}
+            onChange={(e) => setPlayerCount(Number(e.target.value) as PlayerCount)}
+          >
+            <option value={2}>2-Max (HU)</option>
+            <option value={6}>6-Max</option>
+            <option value={9}>9-Max</option>
+          </select>
         </div>
         <div className="stats">
           <div className="stat-item">

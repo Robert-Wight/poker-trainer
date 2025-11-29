@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Position, Scenario } from '../logic/types';
+import type { Position, Scenario, PlayerCount } from '../logic/types';
 import { Card } from './Card';
 import './Table.css';
 
@@ -7,21 +7,43 @@ interface TableProps {
     scenario: Scenario;
 }
 
-const POSITIONS: Position[] = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'];
+const POSITIONS_BY_COUNT: Record<PlayerCount, Position[]> = {
+    2: ['SB', 'BB'],
+    6: ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'],
+    9: ['UTG', 'UTG+1', 'UTG+2', 'MP', 'MP+1', 'CO', 'BTN', 'SB', 'BB']
+};
+
+const POSITION_DESCRIPTIONS: Record<Position, string> = {
+    UTG: "Under the Gun: First to act. Must play a very tight range.",
+    "UTG+1": "UTG+1: Early position. Still very tight.",
+    "UTG+2": "UTG+2: Early position. Tight range.",
+    MP: "Middle Position: Can open slightly wider than UTG.",
+    "MP+1": "Middle Position: Getting closer to the button.",
+    CO: "Cutoff: Late position. Prime spot to isolate and steal.",
+    BTN: "Button: The best position. Acts last post-flop.",
+    SB: "Small Blind: Worst position post-flop (acts first).",
+    BB: "Big Blind: Closes pre-flop action. Great pot odds."
+};
 
 export const Table: React.FC<TableProps> = ({ scenario }) => {
-    const { heroPosition, heroHand, limpers, isStraddled, potSize } = scenario;
+    const { heroPosition, heroHand, limpers, isStraddled, potSize, playerCount } = scenario;
 
-    // Render all 6 seats
+    const positions = POSITIONS_BY_COUNT[playerCount];
+
+    // Determine active players (Hero + Limpers + Blinds)
+    // This logic needs to be robust for different counts.
+    // Simpler approach: Just mark Hero. We don't explicitly show "Limper" text on avatars,
+    // we rely on the description text.
+
     return (
-        <div className="poker-table">
+        <div className={`poker-table players-${playerCount}`}>
             <div className="table-felt">
                 <div className="pot-display">
                     <span className="label">Pot</span>
                     <span className="value">{potSize}bb</span>
                 </div>
 
-                {POSITIONS.map((pos) => {
+                {positions.map((pos) => {
                     const isHero = pos === heroPosition;
                     // Determine if this player is a limper/straddler
                     // We'll just use a simple heuristic for the UI:
@@ -33,31 +55,8 @@ export const Table: React.FC<TableProps> = ({ scenario }) => {
                     if (isStraddled && pos === 'UTG') {
                         role = 'Straddle';
                     } else if (!isHero) {
-                        // Are they a limper?
-                        // We have `limpers` count.
-                        // Let's assume the players immediately to the right of Hero are the limpers?
-                        // Or just random ones before?
-                        // Let's just mark the first N players starting from UTG (or UTG+1 if straddle) as limpers.
-                        const posIdx = POSITIONS.indexOf(pos);
-                        const heroIdx = POSITIONS.indexOf(heroPosition);
-
-                        // Check if this position acted before hero
-                        if (posIdx < heroIdx) {
-                            // It's a candidate.
-                            // If straddle is on, UTG is taken.
-                            if (isStraddled && pos === 'UTG') {
-                                // Already handled
-                            } else {
-                                // It's a potential limper.
-                                // We don't know exactly WHICH ones limped, but let's just say "Limper" for the visualization
-                                // if the math works out.
-                                // Actually, let's just not overthink it. The text description says "X limpers".
-                                // We can just show generic "Player" and maybe chips if they are in the pot.
-                                role = 'Player';
-                            }
-                        } else {
-                            role = 'Player';
-                        }
+                        // Just mark as generic player for now to avoid complex index logic
+                        role = 'Player';
                     }
 
                     return (
@@ -65,6 +64,12 @@ export const Table: React.FC<TableProps> = ({ scenario }) => {
                             <div className="avatar">
                                 {isHero ? 'HERO' : pos}
                             </div>
+
+                            <div className="pos-tooltip">
+                                <div className="tooltip-title">{pos}</div>
+                                <div className="tooltip-desc">{POSITION_DESCRIPTIONS[pos]}</div>
+                            </div>
+
                             {isHero && (
                                 <div className="hero-hand">
                                     <Card card={heroHand[0]} size="sm" />

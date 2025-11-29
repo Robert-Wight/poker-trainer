@@ -46,6 +46,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    cursor: help;
+    /* Indicate hoverable */
 }
 
 .seat .avatar {
@@ -61,6 +63,115 @@
     font-weight: bold;
     color: #aaa;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 5;
+    transition: border-color 0.2s;
+}
+
+.seat:hover .avatar {
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+/* Tooltip Styles */
+.pos-tooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--color-primary-dim);
+    padding: 10px;
+    border-radius: 8px;
+    width: 200px;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.seat:hover .pos-tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-15px);
+}
+
+.tooltip-title {
+    color: var(--color-primary);
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+.tooltip-desc {
+    color: #fff;
+    font-size: 0.8em;
+    line-height: 1.4;
+}
+
+/* Adjust tooltip position for top seats to show below */
+/* Adjust tooltip position for top seats to show below */
+.seat-UTG .pos-tooltip,
+.seat-MP .pos-tooltip,
+.seat-BB .pos-tooltip {
+    bottom: auto;
+    top: 100%;
+    transform: translateX(-50%) translateY(10px);
+}
+
+.seat-UTG:hover .pos-tooltip,
+.seat-MP:hover .pos-tooltip,
+.seat-BB:hover .pos-tooltip {
+    transform: translateX(-50%) translateY(15px);
+}
+
+/* Fix clipping for Left seats (SB, BB) - Align Left */
+.seat-SB .pos-tooltip,
+.seat-BB .pos-tooltip {
+    left: 0;
+    transform: translateX(-10%) translateY(-10px);
+    /* Slight offset */
+}
+
+.seat-SB:hover .pos-tooltip,
+.seat-BB:hover .pos-tooltip {
+    transform: translateX(-10%) translateY(-15px);
+}
+
+/* Fix clipping for Right seats (MP, CO) - Align Right */
+.seat-MP .pos-tooltip,
+.seat-CO .pos-tooltip {
+    left: auto;
+    right: 0;
+    transform: translateX(10%) translateY(-10px);
+}
+
+.seat-MP:hover .pos-tooltip,
+.seat-CO:hover .pos-tooltip {
+    transform: translateX(10%) translateY(-15px);
+}
+
+/* Re-apply vertical overrides for Top seats combined with horizontal fixes */
+.seat-BB .pos-tooltip {
+    top: 100%;
+    bottom: auto;
+    transform: translateX(-10%) translateY(10px);
+}
+
+.seat-BB:hover .pos-tooltip {
+    transform: translateX(-10%) translateY(15px);
+}
+
+.seat-MP .pos-tooltip {
+    top: 100%;
+    bottom: auto;
+    transform: translateX(10%) translateY(10px);
+}
+
+.seat-MP:hover .pos-tooltip {
+    transform: translateX(10%) translateY(15px);
 }
 
 .seat.hero .avatar {
@@ -99,7 +210,7 @@
     left: 5%;
 }
 
-/* Adjust positions for 6-max oval */
+/* 6-Max Defaults (Base styles) */
 .seat-UTG {
     top: -10px;
     left: 50%;
@@ -130,6 +241,106 @@
 .seat-BB {
     top: 20%;
     left: 5%;
+}
+
+/* 9-Max Overrides */
+.players-9 .seat-UTG {
+    top: 10%;
+    right: 30%;
+    transform: none;
+}
+
+.players-9 .seat-UTG\+1 {
+    top: 25%;
+    right: 15%;
+}
+
+.players-9 .seat-UTG\+2 {
+    top: 45%;
+    right: 5%;
+}
+
+.players-9 .seat-MP {
+    bottom: 30%;
+    right: 10%;
+}
+
+.players-9 .seat-MP\+1 {
+    bottom: 15%;
+    right: 25%;
+}
+
+.players-9 .seat-CO {
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* CO is bottom center in 9max? No, let's rotate properly */
+/* Let's do a proper oval distribution for 9-max */
+/* Top: SB, BB, UTG, UTG+1, UTG+2 */
+/* Bottom: MP, MP+1, CO, BTN */
+/* Actually, standard view is Hero at bottom. But Hero moves. */
+/* Let's just place them around the oval */
+
+/* 9-Max Positions */
+.players-9 .seat-SB {
+    bottom: 10%;
+    left: 30%;
+}
+
+.players-9 .seat-BB {
+    bottom: 25%;
+    left: 10%;
+}
+
+.players-9 .seat-UTG {
+    top: 40%;
+    left: 5%;
+}
+
+.players-9 .seat-UTG\+1 {
+    top: 20%;
+    left: 15%;
+}
+
+.players-9 .seat-UTG\+2 {
+    top: 10%;
+    left: 30%;
+}
+
+.players-9 .seat-MP {
+    top: 10%;
+    right: 30%;
+}
+
+.players-9 .seat-MP\+1 {
+    top: 20%;
+    right: 15%;
+}
+
+.players-9 .seat-CO {
+    top: 40%;
+    right: 5%;
+}
+
+.players-9 .seat-BTN {
+    bottom: 10%;
+    right: 30%;
+}
+
+/* Heads-Up (2-Max) Positions */
+.players-2 .seat-SB {
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Button */
+.players-2 .seat-BB {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 

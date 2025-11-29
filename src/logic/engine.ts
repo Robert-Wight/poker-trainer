@@ -1,4 +1,4 @@
-import type { EvaluationResult, GameAction, Hand, Position, Scenario } from './types';
+import type { EvaluationResult, GameAction, Hand, Position, Scenario, PlayerCount } from './types';
 import { RANGES, isHandInRange, parseHand, RANKS } from './ranges';
 
 // Helper to generate a random hand
@@ -37,11 +37,41 @@ const generateScenarioHand = (): Hand => {
     return generateRandomHand();
 };
 
-export const generateScenario = (): Scenario => {
-    const positions: Position[] = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'];
+export const generateScenario = (playerCount: PlayerCount = 6): Scenario => {
+    let positions: Position[] = [];
+
+    if (playerCount === 2) {
+        positions = ['SB', 'BB'];
+    } else if (playerCount === 6) {
+        positions = ['UTG', 'MP', 'CO', 'BTN', 'SB', 'BB'];
+    } else {
+        positions = ['UTG', 'UTG+1', 'UTG+2', 'MP', 'MP+1', 'CO', 'BTN', 'SB', 'BB'];
+    }
+
     const heroPosition = positions[Math.floor(Math.random() * positions.length)];
-    const limpers = Math.floor(Math.random() * 3) + 1; // 1 to 3 limpers (Social games are loose)
-    const isStraddled = Math.random() > 0.7; // 30% chance of straddle
+
+    // Max limpers logic
+    // Heads up (2 players): Max 1 limper (the SB/BTN)
+    // 6-max: Max 3 limpers
+    // 9-max: Max 5 limpers
+    const maxLimpers = playerCount === 2 ? 1 : (playerCount === 6 ? 3 : 5);
+
+    // In Heads Up, if Hero is SB, there are 0 limpers before them (they are first).
+    // If Hero is BB, SB can limp.
+    let limpers = 0;
+    if (playerCount === 2) {
+        if (heroPosition === 'BB') {
+            limpers = Math.random() > 0.5 ? 1 : 0; // 50% chance SB limps
+        } else {
+            limpers = 0; // Hero is SB, first to act
+        }
+    } else {
+        limpers = Math.floor(Math.random() * (maxLimpers + 1));
+        if (limpers === 0 && Math.random() > 0.2) limpers = 1; // Bias towards having action
+    }
+
+    // Straddle logic (only for > 2 players usually, but some HU games allow it. Let's disable for HU for simplicity)
+    const isStraddled = playerCount > 2 && Math.random() > 0.7;
 
     // Adjust stack size based on straddle (halved effective stack)
     // const baseStack = 100; // 100bb deep standard (Unused)
@@ -54,7 +84,8 @@ export const generateScenario = (): Scenario => {
         isStraddled,
         potSize: 1.5 + limpers + (isStraddled ? 2 : 0), // SB+BB + limpers + straddle
         stackSize,
-        description: `You are ${heroPosition}. There are ${limpers} limpers before you.${isStraddled ? ' UTG has Straddled.' : ''}`
+        description: `You are ${heroPosition}. There are ${limpers} limpers before you.${isStraddled ? ' UTG has Straddled.' : ''}`,
+        playerCount
     };
 };
 
@@ -75,18 +106,28 @@ export const evaluateAction = (scenario: Scenario, action: GameAction): Evaluati
 
     if (isIsoValue) {
         shouldRaise = true;
-        raiseReason = "Premium Pairs and Strong Top-Pair Hands (AK, AQ, AJ, KQ) must isolate limpers for value.";
+        raiseReason = limpers > 0
+            ? "Premium Pairs and Strong Top-Pair Hands (AK, AQ, AJ, KQ) must isolate limpers for value."
+            : "Premium Hands (AK, AQ, AJ, KQ) should Open Raise for value.";
     } else if (isIsoMedium) {
         shouldRaise = true;
-        raiseReason = limpers > 1
-            ? "Medium Pairs (88, 99) should be raised to thin the field and build a pot for when you hit a set."
-            : "Medium Pairs (88, 99) are strong enough to isolate a single limper and create set-mining potential.";
+        if (limpers === 0) {
+            raiseReason = "Medium Pairs (88, 99) are strong enough to Open Raise for value.";
+        } else {
+            raiseReason = limpers > 1
+                ? "Medium Pairs (88, 99) should be raised to thin the field and build a pot for when you hit a set."
+                : "Medium Pairs (88, 99) are strong enough to isolate a single limper and create set-mining potential.";
+        }
     } else if (isIsoSuited) {
         shouldRaise = true;
-        raiseReason = "Suited Broadways (KQs, QJs, JTs) have excellent playability and retain equity when called.";
+        raiseReason = limpers > 0
+            ? "Suited Broadways (KQs, QJs, JTs) have excellent playability and retain equity when called."
+            : "Suited Broadways (KQs, QJs, JTs) are strong enough to Open Raise.";
     } else if (isIsoSpec && isLatePos) {
         shouldRaise = true;
-        raiseReason = "Speculative hands (A5s, 89s) can isolate from late position (CO, BTN) to utilize positional advantage.";
+        raiseReason = limpers > 0
+            ? "Speculative hands (A5s, 89s) can isolate from late position (CO, BTN) to utilize positional advantage."
+            : "Speculative hands (A5s, 89s) are good candidates to Open Raise from late position to steal the blinds.";
     }
 
     // 2. Check for Over-Limp

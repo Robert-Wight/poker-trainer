@@ -18,7 +18,7 @@ const suitColors: Record<Suit, string> = {
     h: '#e74c3c', // Red
     d: '#3498db', // Blue (Four color deck style for readability)
     c: '#2ecc71', // Green
-    s: '#bdc3c7', // Gray/Black
+    s: '#404040', // Dark Charcoal (Better visibility than light gray)
 };
 
 export const Card: React.FC<CardProps> = ({ card, size = 'md' }) => {

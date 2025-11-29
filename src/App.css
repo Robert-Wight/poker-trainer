@@ -51,6 +51,22 @@
   color: var(--color-primary);
 }
 
+.player-select {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1px solid var(--color-surface-light);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.player-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
 .stats {
   display: flex;
   gap: 20px;
