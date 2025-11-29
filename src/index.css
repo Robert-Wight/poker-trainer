@@ -2,17 +2,26 @@
   --color-bg: #121212;
   --color-surface: #1e1e1e;
   --color-surface-light: #2c2c2c;
-  --color-primary: #d4af37; /* Gold */
+  --color-primary: #d4af37;
+  /* Gold */
   --color-primary-dim: #a68b2b;
-  --color-accent: #2ecc71; /* Green for success/action */
-  --color-danger: #e74c3c; /* Red for fold/error */
+  --color-accent: #2ecc71;
+  /* Green for success/action */
+  --color-danger: #e74c3c;
+  /* Red for fold/error */
   --color-text: #ffffff;
   --color-text-dim: #b3b3b3;
-  
+
   --font-main: 'Inter', system-ui, sans-serif;
-  
+
   --shadow-card: 0 4px 6px rgba(0, 0, 0, 0.3);
   --shadow-glow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
