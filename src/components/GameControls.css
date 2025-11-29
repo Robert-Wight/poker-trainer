@@ -1,0 +1,81 @@
+.game-controls {
+    padding: 20px;
+    background: var(--color-surface);
+    border-top: 1px solid var(--color-surface-light);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.raise-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.raise-slider {
+    flex: 1;
+    height: 6px;
+    background: var(--color-surface-light);
+    border-radius: 3px;
+    appearance: none;
+}
+
+.raise-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.raise-value {
+    font-weight: bold;
+    color: var(--color-primary);
+    min-width: 50px;
+    text-align: right;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    flex: 1;
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    text-transform: uppercase;
+    transition: transform 0.1s, opacity 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-fold {
+    background: var(--color-surface-light);
+    color: var(--color-danger);
+    border: 1px solid var(--color-danger);
+}
+
+.btn-call {
+    background: var(--color-surface-light);
+    color: var(--color-text);
+    border: 1px solid var(--color-text-dim);
+}
+
+.btn-raise {
+    background: var(--color-primary);
+    color: #000;
+    flex: 1.5;
+    /* Larger raise button */
+}
