@@ -78,7 +78,9 @@ export const evaluateAction = (scenario: Scenario, action: GameAction): Evaluati
         raiseReason = "Premium Pairs and Strong Top-Pair Hands (AK, AQ, AJ, KQ) must isolate limpers for value.";
     } else if (isIsoMedium) {
         shouldRaise = true;
-        raiseReason = "Medium Pairs (88, 99) are strong enough to isolate a single limper and create set-mining potential.";
+        raiseReason = limpers > 1
+            ? "Medium Pairs (88, 99) should be raised to thin the field and build a pot for when you hit a set."
+            : "Medium Pairs (88, 99) are strong enough to isolate a single limper and create set-mining potential.";
     } else if (isIsoSuited) {
         shouldRaise = true;
         raiseReason = "Suited Broadways (KQs, QJs, JTs) have excellent playability and retain equity when called.";

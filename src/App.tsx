@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Table } from './components/Table';
 import { GameControls } from './components/GameControls';
 import { Feedback } from './components/Feedback';
+import { Glossary } from './components/Glossary';
 import { generateScenario, evaluateAction } from './logic/engine';
 import type { Scenario, EvaluationResult, GameAction } from './logic/types';
 import './App.css';
@@ -11,6 +12,7 @@ function App() {
   const [result, setResult] = useState<EvaluationResult | null>(null);
   const [streak, setStreak] = useState(0);
   const [score, setScore] = useState({ correct: 0, total: 0 });
+  const [showGlossary, setShowGlossary] = useState(false);
 
   useEffect(() => {
     startNewHand();
@@ -41,7 +43,10 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <div className="title">Poker Trainer</div>
+        <div className="header-left">
+          <div className="title">Poker Trainer</div>
+          <button className="btn-help" onClick={() => setShowGlossary(true)}>?</button>
+        </div>
         <div className="stats">
           <div className="stat-item">
             <span className="label">Streak</span>
@@ -72,6 +77,10 @@ function App() {
 
       {result && (
         <Feedback result={result} onNext={startNewHand} />
+      )}
+
+      {showGlossary && (
+        <Glossary onClose={() => setShowGlossary(false)} />
       )}
     </div>
   );
