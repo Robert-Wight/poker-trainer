@@ -26,7 +26,7 @@ const POSITION_DESCRIPTIONS: Record<Position, string> = {
 };
 
 export const Table: React.FC<TableProps> = ({ scenario }) => {
-    const { heroPosition, heroHand, limpers, isStraddled, potSize, playerCount } = scenario;
+    const { heroPosition, heroHand, limpers, isStraddled, potSize, playerCount, stage, board, villainType, villainAction } = scenario;
 
     const positions = POSITIONS_BY_COUNT[playerCount];
 
@@ -43,6 +43,14 @@ export const Table: React.FC<TableProps> = ({ scenario }) => {
                     <span className="value">{potSize}bb</span>
                 </div>
 
+                {stage === 'flop' && (
+                    <div className="board-cards">
+                        {board.map((card, i) => (
+                            <Card key={i} card={card} size="md" />
+                        ))}
+                    </div>
+                )}
+
                 {positions.map((pos) => {
                     const isHero = pos === heroPosition;
                     // Determine if this player is a limper/straddler
@@ -51,8 +59,12 @@ export const Table: React.FC<TableProps> = ({ scenario }) => {
                     // Else if pos is before Hero and we have limpers remaining -> Limper
 
                     let role = '';
+                    let actionLabel = '';
 
-                    if (isStraddled && pos === 'UTG') {
+                    if (stage === 'flop' && pos === 'BB') { // Hardcoded Villain pos for now
+                        role = villainType || 'Villain';
+                        actionLabel = villainAction || '';
+                    } else if (isStraddled && pos === 'UTG') {
                         role = 'Straddle';
                     } else if (!isHero) {
                         // Just mark as generic player for now to avoid complex index logic
@@ -77,6 +89,12 @@ export const Table: React.FC<TableProps> = ({ scenario }) => {
                                 </div>
                             )}
                             {role === 'Straddle' && <div className="badge straddle">Straddle</div>}
+                            {stage === 'flop' && role && role !== 'Straddle' && role !== 'Player' && (
+                                <div className="badge villain-type">
+                                    {role}
+                                    {actionLabel && <div className="action-label">{actionLabel}</div>}
+                                </div>
+                            )}
                         </div>
                     );
                 })}

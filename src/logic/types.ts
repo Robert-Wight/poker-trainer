@@ -25,6 +25,10 @@ export interface GameAction {
 
 export type PlayerCount = 2 | 6 | 9;
 
+export type GameStage = 'preflop' | 'flop';
+export type OpponentType = 'Passive Station' | 'Maniac' | 'Nit' | 'Unknown';
+export type BoardTexture = 'Dry' | 'Wet' | 'Paired' | 'Monotone';
+
 export interface Scenario {
     heroPosition: Position;
     heroHand: Hand;
@@ -34,6 +38,11 @@ export interface Scenario {
     stackSize: number; // in BB
     description: string;
     playerCount: PlayerCount;
+    // Post-flop specific
+    stage: GameStage;
+    board: Card[];
+    villainType?: OpponentType;
+    villainAction?: string;
 }
 
 export interface EvaluationResult {

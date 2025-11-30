@@ -3,7 +3,7 @@ import { Table } from './components/Table';
 import { GameControls } from './components/GameControls';
 import { Feedback } from './components/Feedback';
 import { Glossary } from './components/Glossary';
-import { generateScenario, evaluateAction } from './logic/engine';
+import { generateScenario, evaluateAction, generatePostFlopScenario } from './logic/engine';
 import { playCardSound, playWinSound, playErrorSound } from './logic/sounds';
 import type { Scenario, EvaluationResult, GameAction, PlayerCount } from './logic/types';
 import './App.css';
@@ -15,13 +15,18 @@ function App() {
   const [score, setScore] = useState({ correct: 0, total: 0 });
   const [showGlossary, setShowGlossary] = useState(false);
   const [playerCount, setPlayerCount] = useState<PlayerCount>(6);
+  const [gameMode, setGameMode] = useState<'preflop' | 'postflop'>('preflop');
 
   useEffect(() => {
     startNewHand();
-  }, [playerCount]); // Restart when count changes
+  }, [playerCount, gameMode]); // Restart when count or mode changes
 
   const startNewHand = () => {
-    setScenario(generateScenario(playerCount));
+    if (gameMode === 'preflop') {
+      setScenario(generateScenario(playerCount));
+    } else {
+      setScenario(generatePostFlopScenario(playerCount));
+    }
     setResult(null);
     playCardSound();
   };
@@ -60,6 +65,16 @@ function App() {
             <option value={2}>2-Max (HU)</option>
             <option value={6}>6-Max</option>
             <option value={9}>9-Max</option>
+          </select>
+
+          <select
+            className="player-select"
+            value={gameMode}
+            onChange={(e) => setGameMode(e.target.value as 'preflop' | 'postflop')}
+            style={{ marginLeft: '10px', borderColor: 'var(--color-accent)' }}
+          >
+            <option value="preflop">Pre-flop Trainer</option>
+            <option value="postflop">Post-flop Defense</option>
           </select>
         </div>
         <div className="stats">

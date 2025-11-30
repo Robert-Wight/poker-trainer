@@ -346,12 +346,38 @@
 
 .hero-hand {
     position: absolute;
-    top: 45px;
+    bottom: -60px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 4px;
+    gap: 5px;
+    z-index: 20;
+}
+
+.board-cards {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 8px;
     z-index: 10;
+}
+
+.badge.villain-type {
+    background: var(--color-danger);
+    color: #fff;
+    top: -25px;
+    bottom: auto;
+    width: auto;
+    padding: 4px 8px;
+    white-space: nowrap;
+}
+
+.action-label {
+    font-size: 0.7rem;
+    color: #ffd700;
+    margin-top: 2px;
 }
 
 .badge {
