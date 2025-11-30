@@ -180,65 +180,35 @@
     background: #1a1a1a;
 }
 
-.seat-UTG {
-    top: 10%;
-    left: 30%;
-}
-
-.seat-MP {
-    top: 10%;
-    right: 30%;
-}
-
-.seat-CO {
-    top: 40%;
-    right: 5%;
-}
-
-.seat-BTN {
-    bottom: 10%;
-    right: 30%;
-}
-
-.seat-SB {
-    bottom: 10%;
-    left: 30%;
-}
-
-.seat-BB {
-    top: 40%;
-    left: 5%;
-}
-
-/* 6-Max Defaults (Base styles) */
-.seat-UTG {
+/* 6-Max Positions */
+.players-6 .seat-UTG {
     top: -10px;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.seat-MP {
+.players-6 .seat-MP {
     top: 20%;
     right: 5%;
 }
 
-.seat-CO {
+.players-6 .seat-CO {
     bottom: 20%;
     right: 5%;
 }
 
-.seat-BTN {
+.players-6 .seat-BTN {
     bottom: -10px;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.seat-SB {
+.players-6 .seat-SB {
     bottom: 20%;
     left: 5%;
 }
 
-.seat-BB {
+.players-6 .seat-BB {
     top: 20%;
     left: 5%;
 }
