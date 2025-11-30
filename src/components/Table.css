@@ -244,37 +244,7 @@
 }
 
 /* 9-Max Overrides */
-.players-9 .seat-UTG {
-    top: 10%;
-    right: 30%;
-    transform: none;
-}
 
-.players-9 .seat-UTG\+1 {
-    top: 25%;
-    right: 15%;
-}
-
-.players-9 .seat-UTG\+2 {
-    top: 45%;
-    right: 5%;
-}
-
-.players-9 .seat-MP {
-    bottom: 30%;
-    right: 10%;
-}
-
-.players-9 .seat-MP\+1 {
-    bottom: 15%;
-    right: 25%;
-}
-
-.players-9 .seat-CO {
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-}
 
 /* CO is bottom center in 9max? No, let's rotate properly */
 /* Let's do a proper oval distribution for 9-max */
