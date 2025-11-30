@@ -24,11 +24,13 @@ const suitColors: Record<Suit, string> = {
 export const Card: React.FC<CardProps> = ({ card, size = 'md' }) => {
     const color = suitColors[card.suit];
 
+    const displayRank = card.rank === 'T' ? '10' : card.rank;
+
     return (
         <div className={`poker-card size-${size}`} style={{ color }}>
-            <div className="rank top">{card.rank}</div>
+            <div className="rank top">{displayRank}</div>
             <div className="suit">{suitSymbols[card.suit]}</div>
-            <div className="rank bottom">{card.rank}</div>
+            <div className="rank bottom">{displayRank}</div>
         </div>
     );
 };
